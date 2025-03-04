@@ -31,7 +31,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "private_subnet" {
   vpc_id = aws_vpc.main_vpc.id
   cidr_block = "10.0.11.0/24"
-  availability_zone = "eu-west-1a"
+  availability_zone = "eu-west-1b"
         tags = {
             name = "private_subnet"
         }
@@ -109,6 +109,7 @@ resource "aws_instance" "web_server" {
   key_name      = aws_key_pair.my_key.key_name
   subnet_id     = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
     Name = "WebServer"
@@ -123,4 +124,78 @@ resource "aws_eip" "web_eip" {
   tags = {
     Name = "WebEIP"
   }
+}
+
+# Create a DynamoDB Table
+resource "aws_dynamodb_table" "my_dynamodb_table" {
+  name           = "myapp-table"
+  billing_mode   = "PAY_PER_REQUEST"  # No capacity planning needed (scales automatically)
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"  # String type (Primary Key)
+  }
+
+  tags = {
+    Name = "MyDynamoDBTable"
+  }
+}
+
+# allow ec2 instance to access dynamodb -> ec2 instance need permission to access dynamodb
+# create an IAM role for EC2 instance
+resource "aws_iam_role" "ec2_dynamodb_role" {
+  name = "EC2DynamoDBAccessRole"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+# attach policy to allow dynamoDB access
+resource "aws_iam_policy" "dynamodb_access_policy" {
+  name        = "DynamoDBAccessPolicy"
+  description = "Allow EC2 to access DynamoDB"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:Query",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "${aws_dynamodb_table.my_dynamodb_table.arn}"
+    }
+  ]
+}
+EOF
+}
+
+# attach policy to role
+resource "aws_iam_role_policy_attachment" "attach_dynamodb_policy" {
+  role       = aws_iam_role.ec2_dynamodb_role.name
+  policy_arn = aws_iam_policy.dynamodb_access_policy.arn
+}
+
+# attach role to ec2 instance
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "EC2InstanceProfile"
+  role = aws_iam_role.ec2_dynamodb_role.name
 }
