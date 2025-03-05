@@ -32,7 +32,7 @@ terraform-project/
 
 # Architecture Diagram 
 
-![AWS Architecture](learn-cloud-ops-main/aws-terraform-project/images/aws-architecture-diagram.svg)
+![AWS Architecture](./aws-terraform-project/images/aws-architecture-diagram.svg)
 
 # Comprehensive Terraform Infrastructure Configuration Guide
 
