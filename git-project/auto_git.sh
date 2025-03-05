@@ -4,6 +4,7 @@
 PROJECTS=(
     "/Users/D073963/mygithub/learn-cloud-ops-main/git-project"
     "/Users/D073963/mygithub/learn-cloud-ops-main/aws-terraform-project"
+    "/Users/D073963/mygithub/learn-cloud-ops-main/python-coding-challange"
 )
 
 echo "🚀 Starting Git update process for all projects..."
