@@ -1,7 +1,7 @@
 # learn-cloud-ops
 cloud learning
 
-# terraform 
+# AWS Infrastructure with Terraform - Step-by-Step Learning Plan
 Step 1: Preparation
         Install Terraform
         Set Up AWS CLI & Configure Credentials
@@ -16,19 +16,21 @@ Step 6: Autoscaling and Load Balancing
 Step 7: CI/CD with Terraform (not implemented yet will be)
 
 # Project Structure 
+```
 terraform-project/
 │
-├── provider.tf
-├── variables.tf
-├── s3.tf
-├── vpc.tf
-├── security_group.tf
-├── ec2.tf
-├── dynamodb.tf
-├── iam.tf
-├── load_balancer.tf
-├── auto_scaling.tf
-└── terraform.tfvars  # Optional: for defining variable values
+├── provider.tf          # AWS provider configuration
+├── variables.tf         # Variable definitions
+├── s3.tf                # S3 bucket configuration
+├── vpc.tf               # VPC, Subnet, Internet Gateway, Route Table configurations
+├── security_group.tf    # Security Group configuration
+├── ec2.tf               # EC2 Instance and Key Pair configurations
+├── dynamodb.tf          # DynamoDB Table configuration
+├── iam.tf               # IAM Roles, Policies, and Users
+├── load_balancer.tf     # Application Load Balancer configuration
+├── auto_scaling.tf      # Launch Template and Auto Scaling Group configurations
+└── outputs.tf           # Optional: Output values
+```
 
 # Architecture Diagram 
 
