@@ -3,7 +3,7 @@
 # List of project directories (Update this list with your actual paths)
 PROJECTS=(
     "/Users/D073963/mygithub/learn-cloud-ops-main/git-project"
-    "/Users/D073963/mygithub/learn-cloud-ops-main/aws-terraform-project"
+    "/Users/D073963/mygithub/learn-cloud-ops-main/aws-terraform"
     "/Users/D073963/mygithub/learn-cloud-ops-main/python-coding-challange"
 )
 
