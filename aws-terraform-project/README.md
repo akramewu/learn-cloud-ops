@@ -30,6 +30,10 @@ terraform-project/
 ├── auto_scaling.tf
 └── terraform.tfvars  # Optional: for defining variable values
 
+# Architecture Diagram 
+
+![Alt text](learn-cloud-ops-main/aws-terraform-project/aws-architecture-diagram.svg)
+
 # Comprehensive Terraform Infrastructure Configuration Guide
 
 ## 1. `provider.tf`
