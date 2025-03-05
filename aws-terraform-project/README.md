@@ -2,6 +2,7 @@
 cloud learning
 
 # AWS Infrastructure with Terraform - Step-by-Step Learning Plan
+```
 Step 1: Preparation
         Install Terraform
         Set Up AWS CLI & Configure Credentials
@@ -14,7 +15,7 @@ Step 4: DynamoDB (Database)
 Step 5: IAM Users and Roles (Security)
 Step 6: Autoscaling and Load Balancing
 Step 7: CI/CD with Terraform (not implemented yet will be)
-
+```
 # Project Structure 
 ```
 terraform-project/
