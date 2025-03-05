@@ -34,6 +34,26 @@ terraform-project/
 
 ![AWS Architecture](https://raw.githubusercontent.com/akramewu/learn-cloud-ops/main/aws-terraform-project/images/aws-architecture-diagram.svg)
 
+Key Improvements:
+1. Added VPC Endpoint for DynamoDB (purple box)
+2. Created direct connections from both Public and Private EC2 to the VPC Endpoint
+3. VPC Endpoint connects to DynamoDB without going through the Internet Gateway
+
+Benefits of VPC Endpoint:
+- Private network access to DynamoDB
+- No need for NAT Gateway or Internet Gateway
+- Improved security
+- Potentially lower data transfer costs
+
+Terraform Changes:
+1. Added `aws_vpc_endpoint` resource for DynamoDB
+2. Created a private route table
+3. Added route table association for the private subnet
+
+Additional Recommendations:
+1. Consider adding a NAT Gateway if private instances need internet access
+2. Implement stricter IAM policies
+3. Use VPC Flow Logs for monitoring
 
 # Comprehensive Terraform Infrastructure Configuration Guide
 
