@@ -1,0 +1,13 @@
+{
+    "application": {
+      "name": "MyWebApp",
+      "version": "1.2.3",
+      "database": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "dbuser"
+      }
+    },
+    "environment": "production",
+    "features": ["logging", "monitoring"]
+  }
