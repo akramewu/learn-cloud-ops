@@ -35,7 +35,7 @@ terraform-project/
 
 # Architecture Diagram 
 
-![AWS Architecture](https://raw.githubusercontent.com/akramewu/learn-cloud-ops/main/aws-terraform-project/images/aws-architecture-with-endpoint.svg)
+![AWS Architecture](https://raw.githubusercontent.com/akramewu/learn-cloud-ops/main/aws-terraform/aws-terraform-project/images/aws-architecture-with-endpoint.svg)
 
 Key Improvements:
 1. Added VPC Endpoint for DynamoDB (purple box)
