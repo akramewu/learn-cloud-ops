@@ -60,4 +60,20 @@ config
 .vscode/
 .history/
 
-# JetBrains I
+# JetBrains IDEs
+.idea/
+
+# Logs
+*.log
+
+# Node / Python (if used later)
+node_modules/
+__pycache__/
+
+# ============================
+# CUSTOM LOCAL FILES
+# ============================
+# Local environment or secret configs
+.env
+.env.*
+local.tfvars
