@@ -4,6 +4,7 @@ This project deploys a **free-tier t3.micro EC2** running Ubuntu 22.04 LTS using
 At boot, it installs **Nginx** and serves a simple HTML page.
 
 ## Usage
+```bash
 terraform init
 terraform plan -out=tfplan
 terraform apply "tfplan"
