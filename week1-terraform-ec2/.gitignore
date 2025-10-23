@@ -1,0 +1,63 @@
+# ============================
+# TERRAFORM
+# ============================
+# Local .terraform directories
+**/.terraform/*
+.terraform.lock.hcl
+
+# State files (contain resource details, IPs, ARNs, etc.)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Terraform variable files (can include secrets)
+terraform.tfvars
+*.auto.tfvars
+
+# Sensitive override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+
+# ============================
+# CREDENTIALS / KEYS
+# ============================
+# Private keys
+*.pem
+*.ppk
+*.key
+
+# SSH related
+.ssh/
+known_hosts
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# AWS credentials and configs (never commit these)
+.aws/
+credentials
+config
+
+# ============================
+# EDITOR / SYSTEM FILES
+# ============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+.history/
+
+# JetBrains I
