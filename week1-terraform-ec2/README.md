@@ -2,7 +2,6 @@
 
 This project deploys a **free-tier t3.micro EC2** running Ubuntu 22.04 LTS using Terraform.  
 At boot, it installs **Nginx** and serves a simple HTML page.
-<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/9ff4c143-c088-4dce-b46d-7f5e871f61e6" />
 
 
 ## Usage
@@ -81,3 +80,5 @@ Running EC2 = small cost (or Free Tier if eligible).
 When done: terraform destroy -auto-approve to remove the instance.
 
 Default SG remaining = free (no charges).
+```
+<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/63d3f8ea-aabf-447b-bf56-129000fa3bcc" />
