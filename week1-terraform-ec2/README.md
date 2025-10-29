@@ -46,3 +46,36 @@ terraform.tfvars – sample inputs
 | 18 | Command to validate syntax?           | `terraform validate`                                                |
 | 19 | How to destroy infra safely?          | `terraform destroy`                                                 |
 | 20 | Main benefit of IaC?                  | Consistency, repeatability, and version control.                    |
+
+
+# Manual Steps after Terraform Apply
+chmod 400 on the key → SSH accepts the PEM.
+
+Fixed Security Group:
+
+SSH :22 from your IP (86.184.62.231/32) 👍
+
+HTTP :80 from 0.0.0.0/0 👍
+
+SSH’d in and ran:
+
+apt-get update && apt-get install -y nginx
+
+systemctl enable --now nginx
+
+Wrote /var/www/html/index.html
+
+Visited the public IP/DNS → page loads.
+
+ssh -i ~/.ssh/akramul-key.pem ubuntu@<public_dns_or_ip>
+sudo apt-get update -y
+sudo apt-get install -y nginx
+sudo systemctl enable --now nginx
+echo "Hello from Terraform ✅ ($(hostname))" | sudo tee /var/www/html/index.html
+Cost & cleanup
+
+Running EC2 = small cost (or Free Tier if eligible).
+
+When done: terraform destroy -auto-approve to remove the instance.
+
+Default SG remaining = free (no charges).
