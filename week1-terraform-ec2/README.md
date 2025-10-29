@@ -2,6 +2,8 @@
 
 This project deploys a **free-tier t3.micro EC2** running Ubuntu 22.04 LTS using Terraform.  
 At boot, it installs **Nginx** and serves a simple HTML page.
+<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/9ff4c143-c088-4dce-b46d-7f5e871f61e6" />
+
 
 ## Usage
 ```bash
@@ -52,8 +54,6 @@ terraform.tfvars – sample inputs
 chmod 400 on the key → SSH accepts the PEM.
 
 Fixed Security Group:
-<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/58a88be3-1264-444b-8737-7ec6f79caf15" />
-
 
 SSH :22 from your IP (86.184.62.231/32) 👍
 
