@@ -52,7 +52,7 @@ terraform.tfvars – sample inputs
 chmod 400 on the key → SSH accepts the PEM.
 
 Fixed Security Group:
-<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/f102e2f6-d0fd-4329-aeb7-02a4f6b4176c" />
+<img width="1602" height="74" alt="image" src="https://github.com/user-attachments/assets/58a88be3-1264-444b-8737-7ec6f79caf15" />
 
 
 SSH :22 from your IP (86.184.62.231/32) 👍
