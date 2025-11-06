@@ -9,7 +9,7 @@ Design a 2-AZ VPC:
 - Separate route tables
 
 ## VPC Architecture
-<img width="650" height="763" alt="Screenshot 2025-11-06 at 16 57 36" src="https://github.com/user-attachments/assets/880a4df6-fe94-49c9-b5a3-c4abf34e0208" />
+<img width="653" height="793" alt="Screenshot 2025-11-06 at 17 03 49" src="https://github.com/user-attachments/assets/76c68d1c-e078-4e48-9aa9-304e2205df6f" />
 <img width="647" height="663" alt="Screenshot 2025-11-06 at 16 57 55" src="https://github.com/user-attachments/assets/29fd6054-7e9f-4c53-822f-40742fdb03a6" />
 
 ## Network Plan
