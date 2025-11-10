@@ -40,3 +40,27 @@ terraform.rc
 *.swp
 *.log
 *.tmp
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code and JetBrains IDEs
+.vscode/
+.idea/
+
+# Python virtual environments (if you automate Terraform with Python later)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment variable files
+.env
+.env.*
+
+# Local test files or notes
+*.local
+notes.txt
+
