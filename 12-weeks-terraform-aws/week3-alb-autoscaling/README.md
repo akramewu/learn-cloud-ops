@@ -5,7 +5,11 @@ In this setup, Internet traffic first passes through the Internet Gateway (IGW) 
 ## Goal
 
 
-## VPC Architecture
+## ALB + ASG Architecture
+  <img width="641" height="934" alt="Screenshot 2025-11-11 at 22 38 36" src="https://github.com/user-attachments/assets/461f2906-d353-4626-b090-d1ddb0876769" />
+  <img width="630" height="935" alt="Screenshot 2025-11-11 at 22 40 08" src="https://github.com/user-attachments/assets/0a032549-0231-403f-9e05-f0d3cf7d2a44" />
+
+
 
 
 ## Network Plan
