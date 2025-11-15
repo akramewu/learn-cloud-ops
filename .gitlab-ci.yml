@@ -1,0 +1,150 @@
+stages:
+  - validate
+  - plan
+  - apply
+  - destroy
+
+image: hashicorp/terraform:1.9
+
+variables:
+  TF_IN_AUTOMATION: "true"
+
+############################################
+# WEEK 1 – EC2
+############################################
+
+week1-validate:
+  stage: validate
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week1-terraform-ec2/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week1-terraform-ec2
+    - terraform init
+    - terraform fmt -check
+    - terraform validate
+
+week1-plan:
+  stage: plan
+  needs: ["week1-validate"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week1-terraform-ec2/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week1-terraform-ec2
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - 12-weeks-terraform-aws/week1-terraform-ec2/tfplan
+
+week1-apply:
+  stage: apply
+  when: manual
+  needs: ["week1-plan"]
+  script:
+    - cd 12-weeks-terraform-aws/week1-terraform-ec2
+    - terraform init
+    - terraform apply -auto-approve tfplan
+
+week1-destroy:
+  stage: destroy
+  when: manual
+  script:
+    - cd 12-weeks-terraform-aws/week1-terraform-ec2
+    - terraform init
+    - terraform destroy -auto-approve
+
+
+############################################
+# WEEK 2 – VPC NETWORKING
+############################################
+
+week2-validate:
+  stage: validate
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week2-vpc-networking/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week2-vpc-networking
+    - terraform init
+    - terraform fmt -check
+    - terraform validate
+
+week2-plan:
+  stage: plan
+  needs: ["week2-validate"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week2-vpc-networking/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week2-vpc-networking
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - 12-weeks-terraform-aws/week2-vpc-networking/tfplan
+
+week2-apply:
+  stage: apply
+  when: manual
+  needs: ["week2-plan"]
+  script:
+    - cd 12-weeks-terraform-aws/week2-vpc-networking
+    - terraform init
+    - terraform apply -auto-approve tfplan
+
+week2-destroy:
+  stage: destroy
+  when: manual
+  script:
+    - cd 12-weeks-terraform-aws/week2-vpc-networking
+    - terraform init
+    - terraform destroy -auto-approve
+
+
+############################################
+# WEEK 3 – ALB + AUTOSCALING
+############################################
+
+week3-validate:
+  stage: validate
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week3-alb-autoscaling/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week3-alb-autoscaling
+    - terraform init
+    - terraform fmt -check
+    - terraform validate
+
+week3-plan:
+  stage: plan
+  needs: ["week3-validate"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week3-alb-autoscaling/**/*"
+  script:
+    - cd 12-weeks-terraform-aws/week3-alb-autoscaling
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - 12-weeks-terraform-aws/week3-alb-autoscaling/tfplan
+
+week3-apply:
+  stage: apply
+  when: manual
+  needs: ["week3-plan"]
+  script:
+    - cd 12-weeks-terraform-aws/week3-alb-autoscaling
+    - terraform init
+    - terraform apply -auto-approve tfplan
+
+week3-destroy:
+  stage: destroy
+  when: manual
+  script:
+    - cd 12-weeks-terraform-aws/week3-alb-autoscaling
+    - terraform init
+    - terraform destroy -auto-approve
