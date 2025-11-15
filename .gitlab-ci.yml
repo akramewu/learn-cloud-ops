@@ -26,7 +26,6 @@ week1-validate:
 
 week1-plan:
   stage: plan
-  needs: ["week1-validate"]
   rules:
     - changes:
         - "12-weeks-terraform-aws/week1-terraform-ec2/**/*"
@@ -41,7 +40,9 @@ week1-plan:
 week1-apply:
   stage: apply
   when: manual
-  needs: ["week1-plan"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week1-terraform-ec2/**/*"
   script:
     - cd 12-weeks-terraform-aws/week1-terraform-ec2
     - terraform init
@@ -50,6 +51,9 @@ week1-apply:
 week1-destroy:
   stage: destroy
   when: manual
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week1-terraform-ec2/**/*"
   script:
     - cd 12-weeks-terraform-aws/week1-terraform-ec2
     - terraform init
@@ -73,7 +77,6 @@ week2-validate:
 
 week2-plan:
   stage: plan
-  needs: ["week2-validate"]
   rules:
     - changes:
         - "12-weeks-terraform-aws/week2-vpc-networking/**/*"
@@ -88,7 +91,9 @@ week2-plan:
 week2-apply:
   stage: apply
   when: manual
-  needs: ["week2-plan"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week2-vpc-networking/**/*"
   script:
     - cd 12-weeks-terraform-aws/week2-vpc-networking
     - terraform init
@@ -97,6 +102,9 @@ week2-apply:
 week2-destroy:
   stage: destroy
   when: manual
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week2-vpc-networking/**/*"
   script:
     - cd 12-weeks-terraform-aws/week2-vpc-networking
     - terraform init
@@ -120,7 +128,6 @@ week3-validate:
 
 week3-plan:
   stage: plan
-  needs: ["week3-validate"]
   rules:
     - changes:
         - "12-weeks-terraform-aws/week3-alb-autoscaling/**/*"
@@ -135,7 +142,9 @@ week3-plan:
 week3-apply:
   stage: apply
   when: manual
-  needs: ["week3-plan"]
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week3-alb-autoscaling/**/*"
   script:
     - cd 12-weeks-terraform-aws/week3-alb-autoscaling
     - terraform init
@@ -144,6 +153,9 @@ week3-apply:
 week3-destroy:
   stage: destroy
   when: manual
+  rules:
+    - changes:
+        - "12-weeks-terraform-aws/week3-alb-autoscaling/**/*"
   script:
     - cd 12-weeks-terraform-aws/week3-alb-autoscaling
     - terraform init
