@@ -19,12 +19,12 @@ This lets you learn the full architecture while still deploying the parts your a
 | **CIDR Block**             | Defines IP range                                         | `10.0.0.0/16` = **65,536 IPs**                       |
 
 
-## Goal
-
-
-## ALB + ASG Architecture
+## ALB + ASG Architecture (Real World Pattern) 
   <img width="641" height="934" alt="Screenshot 2025-11-11 at 22 38 36" src="https://github.com/user-attachments/assets/461f2906-d353-4626-b090-d1ddb0876769" />
   <img width="630" height="935" alt="Screenshot 2025-11-11 at 22 40 08" src="https://github.com/user-attachments/assets/0a032549-0231-403f-9e05-f0d3cf7d2a44" />
+
+  <img width="863" height="914" alt="Screenshot 2025-11-18 at 19 23 22" src="https://github.com/user-attachments/assets/a92e6bcb-3e63-47a8-9780-3abcb89f8212" />
+  <img width="863" height="918" alt="Screenshot 2025-11-18 at 19 24 02" src="https://github.com/user-attachments/assets/bd9b6a70-781a-4bd3-bc37-da75053e97d9" />
 
 
 ## No ALB + ASG Architecture
