@@ -112,6 +112,7 @@ week3-autoscaling-no-alb/
 
 
 ## Interview Tips
+```text
 
 📌 Why the Application Is Not Publicly Accessible (No ALB)
 
@@ -162,7 +163,7 @@ Only outbound Internet through NAT.
 “My EC2 instances run inside private subnets. They scale via ASG and use NAT Gateway for outbound updates.
 They are not publicly accessible because ALB is disabled; ALB normally sits in public subnets and forwards traffic to private EC2s.
 This is the recommended production architecture pattern.”
-
+```
 
 ## Commands
 ```bash
