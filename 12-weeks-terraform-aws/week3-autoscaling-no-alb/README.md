@@ -30,7 +30,8 @@ This lets you learn the full architecture while still deploying the parts your a
 ## No ALB + ASG Architecture
 <img width="861" height="915" alt="Screenshot 2025-11-18 at 19 48 20" src="https://github.com/user-attachments/assets/8c20c8d5-71e0-4076-8958-afa9f136a10d" />
 <img width="861" height="915" alt="Screenshot 2025-11-18 at 19 48 31" src="https://github.com/user-attachments/assets/b0a5bcc1-f329-4989-8123-4409883f323f" />
-<img width="558" height="416" alt="Screenshot 2025-10-18 at 11 52 07" src="https://github.com/user-attachments/assets/903738d0-4703-4489-a743-7414abbb0cff" />
+<img width="861" height="323" alt="Screenshot 2025-11-18 at 19 48 41" src="https://github.com/user-attachments/assets/5e80bc95-5ab3-4bc7-8e39-50b35dd78183" />
+
 
 
 ## Network Plan
