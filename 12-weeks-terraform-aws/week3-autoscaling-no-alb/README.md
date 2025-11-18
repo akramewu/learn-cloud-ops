@@ -1,6 +1,10 @@
-# Week 3 – AWS VPC Networking (Explicit AZ version)
+# Week 3 – Auto Scaling Group in Private Subnets (ALB Disabled)
 
-In this setup, Internet traffic first passes through the Internet Gateway (IGW) to a public Application Load Balancer (ALB) deployed in public subnets, where the ALB’s security group inspects and allows inbound traffic from the Internet. The ALB securely distributes requests only to EC2 instances running inside private subnets managed by an Auto Scaling Group (ASG) that uses a launch template to automatically increase or decrease instances based on demand. These EC2 instances are isolated from direct Internet access and can only receive traffic from the ALB’s security group, while using a NAT Gateway in the public subnet for safe outbound connections such as software updates or package downloads.
+This week focuses on deploying a production-style compute layer using Terraform.
+We build an Auto Scaling Group (ASG) inside private subnets, with Internet access provided through a NAT Gateway.
+
+The ALB module is fully implemented but disabled due to AWS free-tier restrictions, which blocked ALB creation.
+This lets you learn the full architecture while still deploying the parts your account supports.
 
 ## Goal
 
@@ -10,6 +14,7 @@ In this setup, Internet traffic first passes through the Internet Gateway (IGW) 
   <img width="630" height="935" alt="Screenshot 2025-11-11 at 22 40 08" src="https://github.com/user-attachments/assets/0a032549-0231-403f-9e05-f0d3cf7d2a44" />
 
 
+## No ALB + ASG Architecture
 
 
 ## Network Plan
@@ -17,7 +22,7 @@ In this setup, Internet traffic first passes through the Internet Gateway (IGW) 
 
 ## Terraform Structure
 
-week3-asg-private-subnets/
+week3-autoscaling-no-alb/
 │
 ├── main.tf                 # Root module orchestrating all submodules
 ├── variables.tf            # Root input variables
@@ -57,7 +62,7 @@ week3-asg-private-subnets/
 ## Verfication Checklist (Once Resources Created)
 
 
-## Flashcards (15)
+## Flashcards
 
 ## Interview Tips
 
@@ -79,31 +84,6 @@ Cannot be reached directly from outside the VPC
 Depend on ALB or NLB to expose the application
 
 As a result, even though the ASG and EC2 launch correctly, the application remains internal-only.
-
-📡 Real-World Architecture Pattern (not implemented here because of limited ALB permit)
-VPC & Subnets → SG → ALB → Target Group → Listener → ASG / ECS / EKS targets
-
-            INTERNET
-                ↓
-      ┌─────────────────┐
-      │  ALB Security   │  (Allows 80/443)
-      └─────────────────┘
-                ↓
-        ┌────────────┐
-        │    ALB     │  (Public Subnets)
-        └────────────┘
-                ↓
-       ┌────────────────┐
-       │ Listener : 80  │  (Incoming rule)
-       └────────────────┘
-                ↓
-     ┌─────────────────────┐
-     │   Target Group      │  (Health Checks)
-     └─────────────────────┘
-                ↓
-   ┌──────────────────────────┐
-   │   EC2 in Private Subnet  │
-   └──────────────────────────┘
 
 
 
