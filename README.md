@@ -23,7 +23,8 @@ cloud learning
 | 11   | Multi-Cloud / Advanced IaC   | Add Azure or GCP Terraform module; hybrid design                            | 🔜 Planned |
 | 12   | Final Capstone Project       | Full 3-tier web app + CI/CD, VPC, EKS/ECS, monitoring, README showcase      | 🔜 Planned |
 
-
+## Project Folder
+```text
 learn-cloud-ops/
 ├── week1-terraform-ec2/
 ├── week2-vpc-networking/
@@ -37,3 +38,4 @@ learn-cloud-ops/
 ├── week10-kms-ssm/
 ├── week11-multicloud/
 └── week12-final-project/
+```
