@@ -39,14 +39,15 @@ This lets you learn the full architecture while still deploying the parts your a
 
 ## Terraform Structure
 
+```text
 week3-autoscaling-no-alb/
 │
-├── main.tf                 # Root module orchestrating all submodules
-├── variables.tf            # Root input variables
-├── outputs.tf              # Root outputs
-├── terraform.tfvars        # Environment-specific variable values
+├── main.tf                     # Root module orchestrating all submodules
+├── variables.tf                # Root input variables
+├── outputs.tf                  # Root outputs
+├── terraform.tfvars            # Environment variables
 │
-├── networking/             # VPC + Subnets + Routing
+├── networking/                 # VPC + Subnets + Routing
 │   ├── variables.tf
 │   ├── 01-vpc.tf
 │   ├── 02-internet-gateway.tf
@@ -57,7 +58,7 @@ week3-autoscaling-no-alb/
 │   ├── 07-private-route-table.tf
 │   └── outputs.tf
 │
-├── loadbalancer/           # ALB module (DISABLED for now, account restricted)
+├── loadbalancer/               # ALB module (DISABLED)
 │   ├── variables.tf
 │   ├── 01-alb-sg.tf
 │   ├── 02-alb.tf
@@ -65,12 +66,13 @@ week3-autoscaling-no-alb/
 │   ├── 04-listener.tf
 │   └── outputs.tf
 │
-└── compute/                # Auto Scaling Group + EC2 Launch Template
+└── compute/                    # ASG + Launch Template
     ├── variables.tf
-    ├── 01-asg-sg.tf         # ASG Security Group (NO ALB MODE)
-    ├── 02-launch-template.tf
-    ├── 03-autoscaling.tf    # ASG → in private subnets
-    └── outputs.tf
+    ├── 01-asg-sg.tf            # ASG Security Group (no ALB)
+    ├── 02-launch-template.tf   # EC2 launch template
+    └── 03-autoscaling.tf       # ASG in private subnets
+        outputs.tf
+```
 
 
                  
