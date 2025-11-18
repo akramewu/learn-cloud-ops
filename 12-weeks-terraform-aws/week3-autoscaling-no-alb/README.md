@@ -6,6 +6,19 @@ We build an Auto Scaling Group (ASG) inside private subnets, with Internet acces
 The ALB module is fully implemented but disabled due to AWS free-tier restrictions, which blocked ALB creation.
 This lets you learn the full architecture while still deploying the parts your account supports.
 
+🧩 Concept Summary
+
+| **Component**              | **Description**                                          | **Interview Tip**                                    |
+| -------------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
+| **VPC**                    | Your isolated private network in AWS                     | “Think of it as your AWS data center.”               |
+| **Subnet**                 | Subdivision of VPC tied to one AZ                        | “Public vs Private is defined by the *route table*.” |
+| **Internet Gateway (IGW)** | Enables public subnets to communicate with the Internet  | “Acts like your building’s main door.”               |
+| **NAT Gateway (NAT GW)**   | Allows private subnets to reach Internet *outbound only* | “Private servers call out, but nobody calls in.”     |
+| **Route Table**            | Determines where traffic goes                            | “Every subnet must have one route table.”            |
+| **Availability Zone (AZ)** | Independent DC for high availability                     | “Always use 2+ AZ for resilience.”                   |
+| **CIDR Block**             | Defines IP range                                         | `10.0.0.0/16` = **65,536 IPs**                       |
+
+
 ## Goal
 
 
@@ -56,13 +69,41 @@ week3-autoscaling-no-alb/
     └── outputs.tf
 
 
-## Concept Summary
-                 |
+                 
+🧪 Verification Checklist (After Terraform Apply)
 
-## Verfication Checklist (Once Resources Created)
+| **Area**                | **What to Verify**                            | **Expected** |
+| ----------------------- | --------------------------------------------- | ------------ |
+| **VPC**                 | CIDR = `10.0.0.0/16`, DNS hostnames enabled   | ✅            |
+| **Subnets**             | 4 subnets (2 public + 2 private across 2 AZs) | ✅            |
+| **IGW**                 | Attached to VPC                               | ✅            |
+| **NAT Gateway**         | In public subnet A, has Elastic IP            | ✅            |
+| **Public Route Table**  | `0.0.0.0/0 → IGW`                             | ✅            |
+| **Private Route Table** | `0.0.0.0/0 → NAT Gateway`                     | ✅            |
+| **ASG EC2 Instances**   | Private subnet only, no public IP             | ✅            |
+| **Outbound Internet**   | `sudo apt update` works in EC2 (via NAT)      | ✅            |
 
 
-## Flashcards
+
+🧠 Flashcards (15 High-Value Questions)
+| #      | **Question**                                   | **Answer**                                                         |
+| ------ | ---------------------------------------------- | ------------------------------------------------------------------ |
+| **1**  | What makes a subnet public or private?         | Its **route table**. If it routes to IGW → public.                 |
+| **2**  | Can a private subnet access Internet directly? | ❌ No — it uses NAT Gateway.                                        |
+| **3**  | Where must NAT Gateway be deployed?            | In a **public subnet** with IGW access.                            |
+| **4**  | Purpose of IGW?                                | Enable inbound/outbound Internet for public subnets.               |
+| **5**  | SG vs NACL?                                    | SG = stateful, instance-level. NACL = stateless, subnet-level.     |
+| **6**  | How many RTs per subnet?                       | Only **one** active association.                                   |
+| **7**  | How do private EC2s install updates?           | Through NAT Gateway (egress only).                                 |
+| **8**  | What if NAT is placed in private subnet?       | It fails — no IGW access.                                          |
+| **9**  | How to save NAT cost in dev?                   | Use NAT Instance or one NAT per region (not recommended for prod). |
+| **10** | Command to list RTs?                           | `aws ec2 describe-route-tables`                                    |
+| **11** | How many IPs in `/16`?                         | 65,536 IPs.                                                        |
+| **12** | Why 2 AZs?                                     | High availability and fault tolerance.                             |
+| **13** | Default public RT target?                      | Internet Gateway.                                                  |
+| **14** | Default private RT target?                     | NAT Gateway.                                                       |
+| **15** | IGW vs NAT GW direction?                       | IGW = inbound+outbound; NAT = outbound only.                       |
+
 
 ## Interview Tips
 
@@ -85,6 +126,36 @@ Depend on ALB or NLB to expose the application
 
 As a result, even though the ASG and EC2 launch correctly, the application remains internal-only.
 
+
+1. Explain Public vs Private Subnet
+
+Public subnet routes to IGW
+
+Private subnet routes to NAT Gateway
+
+Name doesn't matter — route table decides public/private
+
+2. Why NAT Gateway Must Be in Public Subnet
+
+Because NAT needs a public IP + IGW to forward outbound traffic.
+
+3. Why Application Is Not Public
+
+Because EC2 in private subnet has:
+
+No public IP
+
+No IGW
+
+No inbound path
+
+Only outbound Internet through NAT.
+
+4. Perfect Interview Explanation
+
+“My EC2 instances run inside private subnets. They scale via ASG and use NAT Gateway for outbound updates.
+They are not publicly accessible because ALB is disabled; ALB normally sits in public subnets and forwards traffic to private EC2s.
+This is the recommended production architecture pattern.”
 
 
 ## Commands
