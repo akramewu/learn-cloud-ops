@@ -118,6 +118,16 @@ Architecture Diagram (Public + Private Subnets)
  └───────────────────────────────────────────────────────────────┘
 
 
+Terraform resources ALB needs
+
+| Terraform Resource               | Purpose                 |
+| -------------------------------- | ----------------------- |
+| `aws_lb`                         | Create the ALB itself   |
+| `aws_security_group`             | ALB security group      |
+| `aws_lb_target_group`            | Where ALB sends traffic |
+| `aws_lb_listener`                | HTTP/HTTPS listener     |
+| `aws_lb_listener_rule`           | Optional routing rules  |
+| `aws_lb_target_group_attachment` | Attach EC2/ECS targets  |
 
 
 One-Line Memory Trick (Super Useful)
