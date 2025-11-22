@@ -145,4 +145,27 @@ VPC
 → ALB (public → private)
 → RDS (private)
 
+
+More Clear Version
+VPC
+ ├── IGW
+ ├── Public Subnets
+ │    └── Public Route Table + Association
+ ├── NAT + EIP
+ ├── Private Subnets
+ │    └── Private Route Table + Association
+ ├── Security Groups
+ │    ├── ALB SG
+ │    ├── App SG
+ │    ├── DB SG
+ │    └── Bastion SG
+ ├── Bastion Host (Optional)
+ ├── ALB
+ │    └── ALB Listener
+ ├── Target Group
+ │    └── Target Group Attachment
+ ├── App Servers (EC2/ASG)
+ └── RDS
+
+
 ```
