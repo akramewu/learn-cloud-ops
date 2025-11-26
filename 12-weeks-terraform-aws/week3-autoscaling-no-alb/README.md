@@ -35,7 +35,7 @@ This lets you learn the full architecture while still deploying the parts your a
 
 
 ## Network Plan
-
+n/a
 
 ## Terraform Structure
 
