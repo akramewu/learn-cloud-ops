@@ -36,18 +36,21 @@
 terraform init
 terraform fmt
 terraform validate
-terraform plan
-terraform apply
+terraform plan out=tfplan
+terraform apply "tfplan"
 terraform destroy  # when done testing
 ```
 
 ## What I Learned
-[Write your notes here after completing]
+- VPC is regional, subnets are per-AZ
+- Internet Gateway sits at VPC edge, must be attached to VPC
+- Route Table = traffic rules, Route Table Association = linking rules to a subnet
+- 0.0.0.0/0 route to IGW makes a subnet "public"
+- Terraform figures out resource order automatically via references (e.g., aws_vpc.main.id)
 
 ## Issues I Faced
-[Write problems you encountered and how you solved them]
+- `terraform validate` errors — fixed missing required arguments
+- `terraform fmt` — learned to run this before committing for consistent formatting
 
 ## Time Taken
-Started: [Date/Time]
-Completed: [Date/Time]
-Total: [X hours]
+~2-3 hours (Day 1)

@@ -3,11 +3,11 @@ provider "aws" {
 }
 
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  
+
   tags = {
-    Name = "main-vpc"
+    Name        = "main-vpc"
     Environment = var.environment
     Project     = var.project
   }
@@ -22,8 +22,8 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "public_subnet" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
   availability_zone = var.availability_zone
 
   tags = {
@@ -39,10 +39,10 @@ resource "aws_route_table" "public_rt" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-    tags = {
-        Name    = "${var.project}-public-rt"
-        Project = var.project
-    }
+  tags = {
+    Name    = "${var.project}-public-rt"
+    Project = var.project
+  }
 }
 
 resource "aws_route_table_association" "public_rta" {
