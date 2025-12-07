@@ -38,6 +38,11 @@ resource "aws_route_table" "public_rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
+
+    tags = {
+        Name    = "${var.project}-public-rt"
+        Project = var.project
+    }
 }
 
 resource "aws_route_table_association" "public_rta" {
