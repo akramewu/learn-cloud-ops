@@ -13,17 +13,17 @@ output "internet_gateway_id" {
   value       = aws_internet_gateway.igw.id
 }
 
-output "private_subnet_1_cidr" {
-  description = "The CIDR block of the first private subnet"
-  value       = var.private_subnet_1_cidr
-}
-
-output "private_subnet_2_cidr" {
-  description = "The CIDR block of the second private subnet"
-  value       = var.private_subnet_2_cidr
-}
-
 output "nat_gateway_id" {
   description = "The ID of the NAT Gateway"
   value       = aws_nat_gateway.nat_gw.id
+}
+
+output "private_subnet_a_id" {
+  description = "The ID of the first private subnet"
+  value       = aws_subnet.private_subnet_a.id
+}
+
+output "private_subnet_b_id" {
+  description = "The ID of the second private subnet"
+  value       = aws_subnet.private_subnet_b.id
 }
