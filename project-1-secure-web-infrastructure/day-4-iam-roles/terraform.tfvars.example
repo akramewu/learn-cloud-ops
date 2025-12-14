@@ -1,0 +1,4 @@
+#project = "day-1"
+#aws_region  = "eu-west-2"
+#availability_zone = "eu-west-2a"
+#environment = "dev"
