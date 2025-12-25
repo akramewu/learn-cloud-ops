@@ -1,82 +1,80 @@
-# Day 5 - Application Load Balancer
+# Day 4 - IAM Roles & S3 Access
 
 ## Requirements
 - VPC CIDR: `10.0.0.0/16`
-- Public subnets: `10.0.1.0/24` (eu-west-2a), `10.0.2.0/24` (eu-west-2b)
+- Public subnet: `10.0.1.0/24` (eu-west-2a)
 - Private subnet: `10.0.10.0/24` (eu-west-2a)
 - Region: `eu-west-2` (London)
-- Application Load Balancer (internet-facing)
-- Target Group with health checks
-- ALB Listener on port 80
-- Multi-AZ deployment (minimum 2 AZs)
-- ALB Security Group (allow port 80 from internet)
-- Update Private SG (allow port 80 from ALB only)
+- S3 Bucket for testing IAM permissions
+- IAM Role with Trust Policy (allow EC2 to assume)
+- Permission Policy: AWS managed `AmazonS3ReadOnlyAccess`
+- IAM Instance Profile to attach role to EC2
+- Private EC2 instance with IAM role attached
+- Test S3 access without credentials
 
 ## Components Built
-- Second public subnet in eu-west-2b (multi-AZ requirement)
-- ALB Security Group (port 80 from 0.0.0.0/0)
-- Application Load Balancer (internet-facing, multi-AZ)
-- Target Group with health check configuration
-- ALB Listener (port 80 HTTP → Target Group)
-- Target Group Attachment (Private EC2 registered)
-- Updated Private Security Group (port 80 from ALB SG only)
+- S3 bucket (private, blocked public access)
+- IAM Role with Trust Policy allowing EC2 service to assume
+- IAM Role Policy Attachment (S3 ReadOnly Access)
+- IAM Instance Profile linking role to EC2
+- Updated Private EC2 instance with instance profile attached
+- AWS CLI installed on private instance for testing
 
 ## What I Built
-Designed complete Application Load Balancer architecture to distribute traffic across EC2 instances in private subnets. The ALB sits in public subnets across two availability zones (eu-west-2a and eu-west-2b) for high availability. Traffic flows from internet users to the ALB, which forwards requests to registered targets in the target group after performing health checks. The private EC2 instance was updated to accept traffic only from the ALB security group, following security best practices of not exposing backend servers directly to the internet.
+Implemented production-level security using IAM roles for EC2 instances to access S3 without hardcoding credentials. The IAM role uses a trust policy to allow only EC2 service to assume it, and has S3 read-only permissions attached. The instance profile acts as a container to pass the IAM role to the EC2 instance. This demonstrates AWS security best practices - no credentials in code, temporary credentials managed automatically, and least privilege access (read-only, not full admin).
 
 ## Architecture Diagram
 ```
-Internet (Users)
+Internet (My IP: 31.104.176.250)
     │
-    │ HTTP (port 80)
+    │ SSH (port 22)
     ▼
 ┌─────────────────────────────────────────────┐
-│  Public Subnets (Multi-AZ)                  │
+│  Public Subnet (10.0.1.0/24)                │
 │                                             │
-│  ┌──────────────────┐  ┌──────────────────┐│
-│  │ eu-west-2a       │  │ eu-west-2b       ││
-│  │ 10.0.1.0/24      │  │ 10.0.2.0/24      ││
-│  │                  │  │                  ││
-│  │  ┌────────────┐  │  │  ┌────────────┐  ││
-│  │  │ Bastion    │  │  │  │            │  ││
-│  │  └────────────┘  │  │  │            │  ││
-│  │                  │  │                  ││
-│  │  Application Load Balancer (Spans both) ││
-│  │  Security Group: alb-sg                 ││
-│  │  Listener: Port 80 → Target Group       ││
-│  └──────────────────┘  └──────────────────┘│
-└─────────────────────────────────────────────┘
-    │
-    │ Health Check: GET / every 30s
-    ▼
-┌─────────────────────────────────────────────┐
-│  Target Group                               │
-│  Protocol: HTTP, Port: 80                   │
-│  Health: 2 success = healthy                │
-└─────────────────┬───────────────────────────┘
-                  │
-                  ▼
+│  ┌─────────────────────────────────────┐    │
+│  │  Bastion Host                       │    │
+│  │  Public IP: 35.177.56.4             │    │
+│  │  Private IP: 10.0.1.x               │    │
+│  └──────────┬──────────────────────────┘    │
+└─────────────┼───────────────────────────────┘
+              │ SSH (port 22)
+              ▼
 ┌─────────────────────────────────────────────┐
 │  Private Subnet (10.0.10.0/24)              │
 │                                             │
 │  ┌─────────────────────────────────────┐    │
-│  │  Private EC2 (nginx)                │    │
-│  │  Private IP: 10.0.10.x              │    │
-│  │  Security Group: private-sg         │    │
-│  │  Port 80: ALB SG only ✅            │    │
-│  │  IAM Role: S3 ReadOnly              │    │
-│  └─────────────────────────────────────┘    │
+│  │  Private Web Server                 │    │
+│  │  Private IP: 10.0.10.167            │    │
+│  │  Instance Profile: ✅               │    │
+│  │  └─> IAM Role: ec2-role             │    │
+│  │      └─> Trust Policy: EC2 only     │    │
+│  │      └─> Permission: S3 ReadOnly    │    │
+│  │  Nginx: Running ✅                  │    │
+│  └──────────┬──────────────────────────┘    │
+└─────────────┼───────────────────────────────┘
+              │ S3 API calls (no credentials!)
+              ▼
+┌─────────────────────────────────────────────┐
+│           AWS S3 Service                    │
+│                                             │
+│  📦 day-3-test-bucket-123456                │
+│  📦 akramul-terraform-state-eu-west-2       │
 └─────────────────────────────────────────────┘
 
-Traffic Flow:
-Internet → ALB (port 80) → Target Group (health check) → Private EC2 (nginx)
+IAM Flow:
+EC2 → Instance Profile → IAM Role → S3 Access
+(Temporary credentials auto-managed by AWS)
 ```
 
-## Files Created/Modified
-- `alb.tf` - Application Load Balancer, Target Group, Listener, Attachment
-- `network.tf` - Added public_subnet_b in eu-west-2b
-- `security.tf` - Added alb_sg, updated private_sg (port 80 from ALB only)
-- `outputs.tf` - Added alb_dns_name output
+## Files Created
+- `main.tf` - Provider configuration
+- `network.tf` - VPC, subnets, IGW, NAT, route tables (from Day 3)
+- `security.tf` - Security Groups (from Day 3)
+- `compute.tf` - EC2 instances with IAM instance profile
+- `iam.tf` - S3 bucket, IAM role, trust policy, policy attachment, instance profile
+- `variables.tf` - Variable definitions
+- `outputs.tf` - Output values including S3 bucket name, IAM role ARN, instance profile name
 - `terraform.tfvars.example` - Example values
 - `terraform.tfvars` - Actual values (gitignored)
 
@@ -84,140 +82,88 @@ Internet → ALB (port 80) → Target Group (health check) → Private EC2 (ngin
 ```bash
 # Setup
 cd project-1-secure-web-infrastructure
-cp -r day-4-iam-roles day-5-load-balancer
-cd day-5-load-balancer
+cp -r day-3-ec2-bastion day-4-iam-roles
+cd day-4-iam-roles
 
 # Terraform workflow
 terraform init
 terraform fmt
 terraform validate
 terraform plan -out=tfplan
-terraform apply "tfplan"  # Failed due to account limitation
+terraform apply "tfplan"
 
-# Cleanup
-terraform destroy  # Successfully destroyed all resources
+# Testing
+ssh -i akramul-key.pem ubuntu@35.177.56.4
+scp -i akramul-key.pem akramul-key.pem ubuntu@35.177.56.4:~/
+ssh -i akramul-key.pem ubuntu@35.177.56.4
+ssh -i ~/.ssh/akramul-key.pem ubuntu@10.0.10.167
+
+# IAM Role Testing
+aws s3 ls                    # List S3 buckets without credentials!
+env | grep AWS               # Verify no credentials in environment
+curl http://localhost        # Check nginx
+
+terraform destroy  # when done testing
 ```
 
 ## What I Learned
-- **Application Load Balancer (ALB)**: Layer 7 load balancer that distributes HTTP/HTTPS traffic
-- **Target Groups**: Container for EC2 instances that receive traffic from ALB
-- **Health Checks**: ALB automatically checks instance health and routes traffic only to healthy targets
-- **Multi-AZ Requirement**: ALB requires minimum 2 subnets in different availability zones for high availability
-- **Listener**: Defines what port ALB listens on and where to forward traffic
-- **Target Registration**: EC2 instances must be manually registered to target group (without Auto Scaling)
-- **Security Group Chaining**: Private instances accept traffic only from ALB security group, not from internet
-- **ALB vs NLB**: Application Load Balancer works at HTTP layer (L7), Network Load Balancer at TCP layer (L4)
-- **DNS Name**: ALB provides auto-generated DNS name for accessing the application
-- **AWS Account Limitations**: New accounts may have restrictions requiring verification before using certain services
+- **IAM Roles**: Roles define what permissions an AWS service has, separate from user credentials
+- **Trust Policy (AssumeRole Policy)**: Defines WHO can use the role (in this case, EC2 service)
+- **Permission Policy**: Defines WHAT the role can do (in this case, read S3)
+- **Instance Profile**: Container that passes IAM role to EC2 (AWS technical requirement)
+- **AWS Managed Policies**: Pre-built permission sets by AWS (e.g., `AmazonS3ReadOnlyAccess`)
+- **Least Privilege Principle**: Give only the access needed (S3 read, not write/delete)
+- **Temporary Credentials**: IAM role provides automatic temporary credentials, no need to hardcode
+- **Security Best Practice**: Never hardcode AWS credentials in code or user data
+- **Credentials Flow**: EC2 automatically gets temporary credentials via IAM role, refreshed automatically
+- **Trust vs Permission**: Trust Policy = who can assume, Permission Policy = what they can do
 
 ## Issues I Faced
-- **AWS Account Limitation - Load Balancer Creation Blocked**: 
-```
-  Error: operation error Elastic Load Balancing v2: CreateLoadBalancer
-  StatusCode: 400, OperationNotPermitted
-  Message: This AWS account currently does not support creating load balancers
-```
-  **Root Cause:** New AWS accounts require verification before enabling load balancer creation
-  
-  **Action Taken:** 
-  - Created AWS Support case #176615986800533
-  - Completed account verification steps (payment method, phone number, contact info)
-  - Destroyed all infrastructure to avoid costs while waiting for resolution
-  
-  **Status:** Awaiting AWS Support response (24-48 hours expected)
-
-- **Multi-AZ Requirement Understanding**: Initially had only one public subnet, learned ALB requires minimum 2 AZs - added public_subnet_b in eu-west-2b
-
-- **Security Group Configuration**: Had to update private_sg from allowing port 80 from 0.0.0.0/0 to accepting only from alb_sg - security best practice
-
-- **Target Group Attachment**: Initially confused about why attachment needed - learned target groups are empty containers until instances are manually registered
+- **S3 bucket ACL deprecated**: Initial code used `acl = "private"` which no longer works - fixed by using `aws_s3_bucket_public_access_block` resource
+- **Global bucket naming**: S3 bucket names must be globally unique across all AWS accounts - used hardcoded suffix instead of random_id for simplicity
+- **Instance Profile concept**: Initially confused about why instance profile needed - learned it's AWS's way of attaching IAM roles to EC2
+- **Testing confusion**: Initially wondered how IAM would "find" the specific bucket - learned that `AmazonS3ReadOnlyAccess` grants access to ALL S3 buckets in the account
+- **Trust Policy syntax**: First time using `jsonencode()` for inline policy - learned proper JSON structure for AssumeRole policy
 
 ## Time Taken
-~3-4 hours (Day 5)
+~3-4 hours (Day 4)
 
-## Testing Status
-❌ **Deployment Blocked** - Unable to test due to AWS account limitation  
-✅ **Code Validated** - terraform validate successful  
-✅ **Architecture Designed** - Complete infrastructure code ready  
-⏳ **Pending** - Awaiting AWS Support case resolution  
+## Testing Completed
+✅ SSH from local machine to Bastion Host  
+✅ SSH from Bastion to Private Server  
+✅ AWS CLI installed on private instance  
+✅ S3 bucket list command successful without credentials  
+✅ Verified no AWS credentials in environment variables (`env | grep AWS` returned nothing)  
+✅ IAM Role ARN output verified: `arn:aws:iam::980826468379:role/day-3-ec2-role`  
+✅ Instance Profile attached correctly  
+✅ S3 ReadOnly access working (can list buckets)  
+✅ Cannot write to S3 (verified read-only permission)  
+✅ Nginx serving custom page  
+✅ Temporary credentials automatically managed by AWS  
 
-
-**Issue:**
-```
-Error: OperationNotPermitted
-Message: This AWS account currently does not support creating load balancers
-Service: Elastic Load Balancing v2
-Operation: CreateLoadBalancer
-```
-
-**Verification Steps Completed:**
-- ✅ Payment method added and verified
-- ✅ Phone number verified (+44 7961152929)
-- ✅ Email verified
-- ✅ Contact information completed
-- ✅ Infrastructure destroyed (no ongoing costs)
-
-
-## Expected Flow After Resolution
-
-Once AWS enables load balancer creation:
+## Test Results
 ```bash
-# Deploy infrastructure
-terraform init
-terraform plan -out=tfplan
-terraform apply "tfplan"
+# S3 Access Test (SUCCESS - No credentials needed!)
+ubuntu@ip-10-0-10-167:~$ aws s3 ls
+2025-11-30 22:55:23 akramul-terraform-state-eu-west-2
+2025-12-14 21:50:50 day-3-test-bucket-123456
 
-# Get ALB DNS name from output
-# Output: alb_dns_name = "day-5-app-alb-xxxxx.eu-west-2.elb.amazonaws.com"
+# Credentials Check (SUCCESS - No hardcoded credentials!)
+ubuntu@ip-10-0-10-167:~$ env | grep AWS
+(no output - proves IAM role is providing temporary credentials automatically)
 
-# Wait 2-3 minutes for health checks
-# Test in browser
-http://day-5-app-alb-xxxxx.eu-west-2.elb.amazonaws.com
-
-# Expected Result:
+# Nginx Check (SUCCESS)
+ubuntu@ip-10-0-10-167:~$ curl http://localhost
 <h1>Hello from Private Server!</h1>
-<p>Hostname: ip-10-0-10-x</p>
-<p>Private IP: 10.0.10.x</p>
+<p>Hostname: ip-10-0-10-167</p>
+<p>Private IP: 10.0.10.167 </p>
 <p>OS: Ubuntu</p>
 ```
 
 ## Key Concepts Demonstrated
-- **High Availability**: Multi-AZ deployment ensures service continues if one AZ fails
-- **Security Layers**: Internet → ALB → Private instances (no direct internet access to backends)
-- **Health Monitoring**: Automatic detection and routing around unhealthy instances
-- **Scalability Ready**: Target group can easily accept additional EC2 instances
-- **Infrastructure as Code**: Complete environment defined in Terraform
-- **Professional Problem Handling**: Encountered limitation, created support case, documented issue
-- **Cost Management**: Destroyed infrastructure while waiting to avoid unnecessary charges
-
-## Production Readiness Notes
-
-**What's Production-Ready:**
-- ✅ Multi-AZ architecture for high availability
-- ✅ Security group isolation (no direct internet access to backends)
-- ✅ Health checks configured
-- ✅ IAM roles for credential-less access
-- ✅ Infrastructure as code
-
-**What Could Be Added (Future Enhancements):**
-- Auto Scaling Group for automatic capacity adjustment
-- HTTPS listener with SSL/TLS certificate
-- CloudWatch alarms for monitoring
-- Multiple EC2 instances across AZs
-- RDS database in private subnet
-- Route 53 for custom domain
-- WAF for application firewall
-
-## Interview Talking Points
-
-**Architecture Decision:** 
-"I designed the ALB to sit in public subnets across two availability zones while keeping application servers in private subnets. This provides high availability and security - if one AZ fails, traffic automatically routes to the other, and backend servers are never directly exposed to the internet."
-
-**Security Best Practice:**
-"I configured security groups to only allow port 80 traffic from the ALB security group to private instances, not from 0.0.0.0/0. This implements defense in depth - even if someone discovers the private IP, they can't access it directly."
-
-**Problem-Solving Experience:**
-"When I encountered the AWS account limitation, I didn't stop - I created a professional support case, completed all verification steps, and documented the entire process. This mirrors real-world scenarios where you need to work with support teams and manage blockers."
-
-**Cost Awareness:**
-"While waiting for AWS support response, I destroyed all infrastructure to avoid unnecessary costs, particularly the NAT Gateway which costs ~$32/month. This shows I understand cloud cost management."
+- **No Hardcoded Credentials**: EC2 accesses S3 without any AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY
+- **Automatic Credential Management**: AWS provides temporary credentials via IAM role, auto-refreshed
+- **Principle of Least Privilege**: Used ReadOnly access, not full S3 admin permissions
+- **Trust Relationships**: Only EC2 service can assume this role, not users or other services
+- **Instance Profiles**: Bridge between IAM roles and EC2 instances
+- **Production Security Pattern**: This is how AWS credentials should be managed in production
