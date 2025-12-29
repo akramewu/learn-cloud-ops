@@ -13,20 +13,20 @@
 #network_interfaces block লাগবে না launch template এ
 #Subnet ASG এ define করবে
 resource "aws_launch_template" "app_launch_template" {
-    name_prefix   = "${var.project}-launch-template-" # লঞ্চ টেমপ্লেটের নামের প্রিফিক্স
-    image_id      = var.ami_id                # কোন AMI থেকে ইন্সট্যান্স তৈরি হবে?
-    instance_type = "t2.micro"                 # ইন্সট্যান্সের টাইপ কী হবে?
-    key_name      = var.ssh_key_name           # SSH কী এর নাম
+  name_prefix   = "${var.project}-launch-template-" # লঞ্চ টেমপ্লেটের নামের প্রিফিক্স
+  image_id      = var.ami_id                        # কোন AMI থেকে ইন্সট্যান্স তৈরি হবে?
+  instance_type = "t2.micro"                        # ইন্সট্যান্সের টাইপ কী হবে?
+  key_name      = var.ssh_key_name                  # SSH কী এর নাম
 
-    # Security Group যুক্ত করো
-    vpc_security_group_ids = [aws_security_group.private_sg.id]
+  # Security Group যুক্ত করো
+  vpc_security_group_ids = [aws_security_group.private_sg.id]
 
-    # IAM Instance Profile যুক্ত করো or EC2 কে ব্যাজ দাও
-    iam_instance_profile {
-        name = aws_iam_instance_profile.ec2_instance_profile.name
-    }
+  # IAM Instance Profile যুক্ত করো or EC2 কে ব্যাজ দাও
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ec2_instance_profile.name
+  }
 
-    user_data = base64encode(<<EOF
+  user_data = base64encode(<<EOF
 #!/bin/bash
 # Update system
 apt update -y
@@ -41,12 +41,12 @@ echo "<p>Hostname: $(hostname)</p>" >> /var/www/html/index.html
 echo "<p>Private IP: $(hostname -I)</p>" >> /var/www/html
 echo "<p>OS: Ubuntu</p>" >> /var/www/html/index.html
 EOF
-)
-    tags = {
-        Name    = "${var.project}-launch-template"
-        Project = var.project
-    }
-  
+  )
+  tags = {
+    Name    = "${var.project}-launch-template"
+    Project = var.project
+  }
+
 }
 
 #Resource: aws_autoscaling_group
@@ -62,34 +62,34 @@ EOF
 #Health check type: "ELB" (ALB health check use করবে)
 #Health check grace period: 300 (5 minutes wait new instance এর জন্য)
 resource "aws_autoscaling_group" "app_asg" {
-    name                      = "${var.project}-asg" # ASG এর নাম
-    max_size                  = 3              # সর্বোচ্চ ইন্সট্যান্স সংখ্যা
-    min_size                  = 1              # সর্বনিম্ন ইন্সট্যান্স সংখ্যা
-    desired_capacity          = 2              # প্রাথমিক ইন্সট্যান্স সংখ্যা
-    launch_template {
-        id      = aws_launch_template.app_launch_template.id
-        version = "$Latest"
-    }
+  name             = "${var.project}-asg" # ASG এর নাম
+  max_size         = 3                    # সর্বোচ্চ ইন্সট্যান্স সংখ্যা
+  min_size         = 1                    # সর্বনিম্ন ইন্সট্যান্স সংখ্যা
+  desired_capacity = 2                    # প্রাথমিক ইন্সট্যান্স সংখ্যা
+  launch_template {
+    id      = aws_launch_template.app_launch_template.id
+    version = "$Latest"
+  }
 
-    vpc_zone_identifier       = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id] # কোন সাবনেটে ইন্সট্যান্স তৈরি হবে?
+  vpc_zone_identifier = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id] # কোন সাবনেটে ইন্সট্যান্স তৈরি হবে?
 
-    target_group_arns         = [aws_lb_target_group.app_tg.arn] # Target group ARNs
+  target_group_arns = [aws_lb_target_group.app_tg.arn] # Target group ARNs
 
-    health_check_type         = "ELB" # ELB health check ব্যবহার করো
-    health_check_grace_period = 300   # ৫ মিনিট grace period
+  health_check_type         = "ELB" # ELB health check ব্যবহার করো
+  health_check_grace_period = 300   # ৫ মিনিট grace period
 
-    tag {
-        key                 = "Name"
-        value               = "${var.project}-asg-instance"
-        propagate_at_launch = true
-    }
+  tag {
+    key                 = "Name"
+    value               = "${var.project}-asg-instance"
+    propagate_at_launch = true
+  }
 
-    tag {
-        key                 = "Project"
-        value               = var.project
-        propagate_at_launch = true
-    }
-  
+  tag {
+    key                 = "Project"
+    value               = var.project
+    propagate_at_launch = true
+  }
+
 }
 
 

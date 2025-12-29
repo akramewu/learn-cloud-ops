@@ -53,10 +53,10 @@ variable "ami_id" {
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-} 
+}
 
 variable "ssh_key_name" {
   description = "SSH key pair name in AWS"
   type        = string
-  default     = "akramul-key"  # ← তোমার AWS key pair name
+  default     = "akramul-key" # ← তোমার AWS key pair name
 }

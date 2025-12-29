@@ -8,7 +8,7 @@ output "bastion_public_ip" {
 
 output "bastion_public_dns" {
   description = "Public DNS of Bastion Host"
-  value       = aws_instance.bastion.public_dns  # ← ঠিক করলাম (bastion + public_dns)
+  value       = aws_instance.bastion.public_dns # ← ঠিক করলাম (bastion + public_dns)
 }
 
 ############################
@@ -16,7 +16,7 @@ output "bastion_public_dns" {
 ############################
 output "private_instance_private_ip" {
   description = "Private IP of Web Server"
-  value       =  aws_instance.app_server.private_ip
+  value       = aws_instance.app_server.private_ip
 }
 
 ############################

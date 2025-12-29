@@ -3,8 +3,8 @@
 # Purpose: Main network container - সব resources এই VPC এর ভিতরে
 ############################
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"    # IP range: 10.0.0.0 to 10.0.255.255
-  enable_dns_hostnames = true              # EC2 দের DNS name দিবে
+  cidr_block           = "10.0.0.0/16" # IP range: 10.0.0.0 to 10.0.255.255
+  enable_dns_hostnames = true          # EC2 দের DNS name দিবে
 
   tags = {
     Name        = "main-vpc"
@@ -32,7 +32,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"           # 256 IPs
-  availability_zone = var.availability_zone_a  # eu-west-2a
+  availability_zone = var.availability_zone_a # eu-west-2a
 
   tags = {
     Name = "main-public-subnet"
@@ -46,7 +46,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "public_subnet_b" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"           # 256 IPs
-  availability_zone = var.availability_zone_b  # eu-west-2b
+  availability_zone = var.availability_zone_b # eu-west-2b
 
   tags = {
     Name = "main-public-subnet-b"
@@ -62,7 +62,7 @@ resource "aws_route_table" "public_rt" {
 
   # Default route: সব traffic internet gateway দিয়ে বাইরে যাবে
   route {
-    cidr_block = "0.0.0.0/0"              # All destinations
+    cidr_block = "0.0.0.0/0" # All destinations
     gateway_id = aws_internet_gateway.igw.id
   }
 
@@ -77,12 +77,12 @@ resource "aws_route_table" "public_rt" {
 # Purpose: Public subnets দের route table এর সাথে link করা
 ############################
 resource "aws_route_table_association" "public_rta" {
-  subnet_id      = aws_subnet.public_subnet.id    # Public Subnet A
+  subnet_id      = aws_subnet.public_subnet.id # Public Subnet A
   route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_route_table_association" "public_rta_b" {
-  subnet_id      = aws_subnet.public_subnet_b.id  # Public Subnet B
+  subnet_id      = aws_subnet.public_subnet_b.id # Public Subnet B
   route_table_id = aws_route_table.public_rt.id
 }
 
@@ -91,7 +91,7 @@ resource "aws_route_table_association" "public_rta_b" {
 # Purpose: NAT Gateway এর জন্য static public IP
 ############################
 resource "aws_eip" "nat_eip" {
-  domain = "vpc"  # VPC এর জন্য EIP
+  domain = "vpc" # VPC এর জন্য EIP
 
   tags = {
     Name = "main-nat-eip"
@@ -118,8 +118,8 @@ resource "aws_nat_gateway" "nat_gw" {
 ############################
 resource "aws_subnet" "private_subnet_a" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_1_cidr  # 10.0.10.0/24
-  availability_zone = var.availability_zone_a     # eu-west-2a
+  cidr_block        = var.private_subnet_1_cidr # 10.0.10.0/24
+  availability_zone = var.availability_zone_a   # eu-west-2a
 
   tags = {
     Name = "main-private-subnet-a"
@@ -132,8 +132,8 @@ resource "aws_subnet" "private_subnet_a" {
 ############################
 resource "aws_subnet" "private_subnet_b" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_2_cidr  # 10.0.11.0/24
-  availability_zone = var.availability_zone_b     # eu-west-2b
+  cidr_block        = var.private_subnet_2_cidr # 10.0.11.0/24
+  availability_zone = var.availability_zone_b   # eu-west-2b
 
   tags = {
     Name = "main-private-subnet-b"
@@ -164,11 +164,11 @@ resource "aws_route_table" "private_rt" {
 # Purpose: Private subnets দের route table এর সাথে link করা
 ############################
 resource "aws_route_table_association" "private_rt_a" {
-  subnet_id      = aws_subnet.private_subnet_a.id  # Private Subnet A
+  subnet_id      = aws_subnet.private_subnet_a.id # Private Subnet A
   route_table_id = aws_route_table.private_rt.id
 }
 
 resource "aws_route_table_association" "private_rt_b" {
-  subnet_id      = aws_subnet.private_subnet_b.id  # Private Subnet B
+  subnet_id      = aws_subnet.private_subnet_b.id # Private Subnet B
   route_table_id = aws_route_table.private_rt.id
 }

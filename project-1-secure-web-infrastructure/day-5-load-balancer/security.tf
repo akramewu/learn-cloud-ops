@@ -18,7 +18,7 @@ resource "aws_security_group" "alb_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Anyone can access ALB
+    cidr_blocks = ["0.0.0.0/0"] # Anyone can access ALB
     description = "HTTP from internet"
   }
 
@@ -26,7 +26,7 @@ resource "aws_security_group" "alb_sg" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"           # All protocols
+    protocol    = "-1" # All protocols
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all outbound traffic"
   }
@@ -90,12 +90,12 @@ resource "aws_security_group" "private_sg" {
 
   # Inbound - Allow HTTP from anywhere 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
     #cidr_blocks = ["0.0.0.0/0"] # ← পরিবর্তন করলাম (anywhere)
     security_groups = [aws_security_group.alb_sg.id] # ← শুধু ALB থেকে access দিবো
-    description = "HTTP from ALB only"
+    description     = "HTTP from ALB only"
   }
 
   # Outbound - Allow all traffic

@@ -5,21 +5,21 @@
 ############################
 resource "aws_lb_target_group" "app_tg" {
   name        = "${var.project}-app-tg"
-  port        = 80                # EC2 port 80 তে nginx চলছে
+  port        = 80 # EC2 port 80 তে nginx চলছে
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
-  target_type = "instance"        # EC2 instance target করবে
+  target_type = "instance" # EC2 instance target করবে
 
   # Health Check - ALB check করবে EC2 কাজ করছে কিনা
   health_check {
     enabled             = true
-    path                = "/"            # কোন path check করবে
+    path                = "/" # কোন path check করবে
     protocol            = "HTTP"
-    matcher             = "200"          # HTTP 200 OK = healthy
-    interval            = 30             # প্রতি 30 second check
-    timeout             = 5              # 5 second wait
-    healthy_threshold   = 2              # 2 বার success = healthy
-    unhealthy_threshold = 2              # 2 বার fail = unhealthy
+    matcher             = "200" # HTTP 200 OK = healthy
+    interval            = 30    # প্রতি 30 second check
+    timeout             = 5     # 5 second wait
+    healthy_threshold   = 2     # 2 বার success = healthy
+    unhealthy_threshold = 2     # 2 বার fail = unhealthy
   }
 
   tags = {
@@ -36,14 +36,14 @@ resource "aws_lb_target_group" "app_tg" {
 ############################
 resource "aws_lb" "app_alb" {
   name               = "${var.project}-app-alb"
-  internal           = false                # Internet-facing (public)
-  load_balancer_type = "application"        # HTTP/HTTPS layer load balancer
+  internal           = false         # Internet-facing (public)
+  load_balancer_type = "application" # HTTP/HTTPS layer load balancer
   security_groups    = [aws_security_group.alb_sg.id]
-  
+
   # Minimum 2টা AZ এর subnet লাগে
   subnets = [
-    aws_subnet.public_subnet.id,     # eu-west-2a
-    aws_subnet.public_subnet_b.id    # eu-west-2b
+    aws_subnet.public_subnet.id,  # eu-west-2a
+    aws_subnet.public_subnet_b.id # eu-west-2b
   ]
 
   tags = {
@@ -75,7 +75,7 @@ resource "aws_lb_listener" "app_listener" {
 # Important: এইটা না দিলে target group empty থাকবে এবং 503 error আসবে
 ############################
 resource "aws_lb_target_group_attachment" "app_attachment" {
-  target_group_arn = aws_lb_target_group.app_tg.arn  # কোন target group
-  target_id        = aws_instance.app_server.id       # কোন EC2
-  port             = 80                               # কোন port
+  target_group_arn = aws_lb_target_group.app_tg.arn # কোন target group
+  target_id        = aws_instance.app_server.id     # কোন EC2
+  port             = 80                             # কোন port
 }

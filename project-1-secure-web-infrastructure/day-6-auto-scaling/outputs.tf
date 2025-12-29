@@ -63,5 +63,5 @@ output "asg_name" {
 
 output "launch_template_id" {
   description = "Launch Template ID"
-  value       = aws_launch_template.app_launch_template.id 
+  value       = aws_launch_template.app_launch_template.id
 }
