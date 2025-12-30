@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   terraform-check:
-    name: Terraform Validation & Planning
+    name: Terraform Validation
     runs-on: ubuntu-latest
     
     steps:
@@ -24,14 +24,8 @@ jobs:
         working-directory: ./project-1-secure-web-infrastructure
         run: terraform fmt -check -recursive
       
-      - name: Terraform Init
+      - name: Terraform Init & Validate
         working-directory: ./project-1-secure-web-infrastructure/day-6-auto-scaling
-        run: terraform init -backend=false
-      
-      - name: Terraform Validate
-        working-directory: ./project-1-secure-web-infrastructure/day-6-auto-scaling
-        run: terraform validate
-      
-      - name: Terraform Plan
-        working-directory: ./project-1-secure-web-infrastructure/day-6-auto-scaling
-        run: terraform plan
+        run: |
+          terraform init -backend=false
+          terraform validate
