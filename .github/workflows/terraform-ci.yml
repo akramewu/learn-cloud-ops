@@ -12,24 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Step 1: Checkout code
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.0
       
-      # Step 3: Format Check
       - name: Terraform Format Check
+        working-directory: ./project-1-secure-web-infrastructure
         run: terraform fmt -check -recursive
-        continue-on-error: false
       
-      # Step 4: Initialize and Validate Each Day
-      - name: Validate Day 6 (Latest)
-        working-directory: ./day-6-auto-scaling
+      - name: Validate Day 6
+        working-directory: ./project-1-secure-web-infrastructure/day-6-auto-scaling
         run: |
           terraform init -backend=false
           terraform validate
