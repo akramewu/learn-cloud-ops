@@ -25,6 +25,7 @@ override.tf.json
 # Ignore Terraform plan output (generated with terraform plan -out=tfplan)
 terraform.tfplan
 *tfplan*
+*tf*
 
 # Ignore Terraform CLI configuration files
 .terraformrc
@@ -64,3 +65,5 @@ venv/
 *.local
 notes.txt
 
+
+tf
