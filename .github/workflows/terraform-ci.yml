@@ -1,0 +1,31 @@
+name: Terraform CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  terraform-check:
+    name: Terraform Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      
+      - name: Terraform Format Check
+        working-directory: ./project-1-secure-web-infrastructure
+        run: terraform fmt -check -recursive
+      
+      - name: Terraform Init & Validate
+        working-directory: ./project-1-secure-web-infrastructure/day-6-auto-scaling
+        run: |
+          terraform init -backend=false
+          terraform validate
