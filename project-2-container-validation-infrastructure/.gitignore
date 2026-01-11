@@ -1,0 +1,69 @@
+# Ignore local Terraform directories (provider-specific files)
+**/.terraform/*
+
+# Ignore Terraform state files (contains sensitive infrastructure details)
+*.tfstate
+*.tfstate.*
+
+# Ignore lock files created during Terraform apply
+.terraform.tfstate.lock.info
+
+# Ignore Terraform crash logs
+crash.log
+crash.*.log
+
+# Ignore Terraform variables that may contain sensitive credentials (e.g., access keys)
+*.tfvars
+*.tfvars.json
+
+# Ignore Terraform override files (used for local modifications)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore Terraform plan output (generated with terraform plan -out=tfplan)
+terraform.tfplan
+*tfplan*
+*tf*
+
+# Ignore Terraform CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore SSH key pairs and sensitive credential files
+*.pem
+*.pub
+*.key
+
+# Ignore temporary and backup files
+*.bak
+*.swp
+*.log
+*.tmp
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code and JetBrains IDEs
+.vscode/
+.idea/
+
+# Python virtual environments (if you automate Terraform with Python later)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment variable files
+.env
+.env.*
+
+# Local test files or notes
+*.local
+notes.txt
+
+
+tf
