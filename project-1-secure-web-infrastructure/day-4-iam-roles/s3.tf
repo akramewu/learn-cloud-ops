@@ -3,6 +3,7 @@
 ############################
 resource "aws_s3_bucket" "test_bucket" {
   bucket = "${var.project}-test-bucket-123456" # S3 bucket এর নাম
+  #force_destroy = true
   tags = {
     Name    = "${var.project}-test-bucket"
     Project = var.project

@@ -17,6 +17,7 @@ resource "random_id" "bucket_suffix" {
 ############################
 resource "aws_s3_bucket" "validation_results" {
   bucket = "${var.project}-validation-results-${random_id.bucket_suffix.hex}"
+  force_destroy = true  # Allow deletion even if objects exist
 
   tags = {
     Name    = "${var.project}-validation-results"
