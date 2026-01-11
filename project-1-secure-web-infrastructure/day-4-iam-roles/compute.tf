@@ -28,13 +28,22 @@ resource "aws_instance" "app_server" {
   vpc_security_group_ids      = [aws_security_group.private_sg.id]
   iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name
 
-  user_data = <<-EOF
+    user_data = <<-EOF
     #!/bin/bash
     # Update system
     apt update -y
     
     # Install nginx
     apt install -y nginx
+    
+    # Install Docker
+    apt install -y docker.io
+    systemctl start docker
+    systemctl enable docker
+    usermod -aG docker ubuntu
+    
+    # Install AWS CLI
+    apt install -y awscli
     
     # Start and enable nginx
     systemctl start nginx
@@ -45,6 +54,8 @@ resource "aws_instance" "app_server" {
     echo "<p>Hostname: $(hostname)</p>" >> /var/www/html/index.html
     echo "<p>Private IP: $(hostname -I)</p>" >> /var/www/html/index.html
     echo "<p>OS: Ubuntu</p>" >> /var/www/html/index.html
+    echo "<p>Docker: Installed</p>" >> /var/www/html/index.html
+    echo "<p>AWS CLI: Installed</p>" >> /var/www/html/index.html
   EOF
 
   tags = {
